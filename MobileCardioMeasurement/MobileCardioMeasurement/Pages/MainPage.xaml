@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BasePage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:base="clr-namespace:MobileCardioMeasurement.Pages.Base;assembly=MobileCardioMeasurement"
+             xmlns:viewModels="clr-namespace:MobileCardioMeasurement.ViewModels;assembly=MobileCardioMeasurement"
+             x:Class="MobileCardioMeasurement.Pages.MainPage"
+             x:TypeArguments="viewModels:MainViewModel">
+    
+    <StackLayout>
+        <!-- Place new controls here -->
+        <Label Text="Welcome to Xamarin.Forms!" 
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+    </StackLayout>
+
+</base:BasePage>

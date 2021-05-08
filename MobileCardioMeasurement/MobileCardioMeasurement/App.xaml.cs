@@ -1,4 +1,7 @@
 ﻿using System;
+using MobileCardioMeasurement.Pages;
+using MobileCardioMeasurement.Services;
+using MobileCardioMeasurement.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -12,7 +15,8 @@ namespace MobileCardioMeasurement
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new NavigationPage();
+            NavigationService.Instance.Navigate<PageWithParam, PageWithParamViewModel, string>("Mobile cardio measurement");
         }
 
         protected override void OnStart()
