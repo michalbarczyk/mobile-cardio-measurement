@@ -16,7 +16,7 @@ namespace MobileCardioMeasurement
             InitializeComponent();
 
             MainPage = new NavigationPage();
-            NavigationService.Instance.Navigate<PageWithParam, PageWithParamViewModel, string>("Mobile cardio measurement");
+            NavigationService.Instance.Navigate(new MainPage());
         }
 
         protected override void OnStart()
