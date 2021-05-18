@@ -1,5 +1,6 @@
 ﻿using MobileCardioMeasurement.ViewModels;
 using Xamarin.Forms;
+using MobileCardioMeasurement.ViewModels.Base;
 
 namespace MobileCardioMeasurement.Pages.Base
 {

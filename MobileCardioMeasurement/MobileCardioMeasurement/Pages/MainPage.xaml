@@ -3,25 +3,36 @@
                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
                xmlns:base="clr-namespace:MobileCardioMeasurement.Pages.Base;assembly=MobileCardioMeasurement"
                xmlns:viewModels="clr-namespace:MobileCardioMeasurement.ViewModels;assembly=MobileCardioMeasurement"
+               xmlns:converters="clr-namespace:MobileCardioMeasurement.Converters"
                x:Class="MobileCardioMeasurement.Pages.MainPage"
                x:TypeArguments="viewModels:MainViewModel" 
-               BackgroundColor="White">
+               BackgroundColor="White"
+               Title="Mobile Cardio Measurement">
+
+    <base:BasePage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        </ResourceDictionary>
+    </base:BasePage.Resources>
     
     <ContentPage.Content>
-        <StackLayout BackgroundColor = "#e8fbe1">
-            
-            <StackLayout Orientation = "Horizontal">
-                <Label x:Name="lblMinutes" Text="00" FontSize = "70"/>
-                <Label Text=":" FontSize = "70"/>
-                <Label x:Name="lblSeconds" Text="00" FontSize = "70"/> 
-            </StackLayout> 
-            
-            <FlexLayout JustifyContent="SpaceEvenly">
-                <Button Command="{Binding StartRecordingCommand}" Text = "Record" BackgroundColor="#7cbb45" WidthRequest="120" Image="Small_Microphone"/>
-                <Button Command="{Binding StopRecordingCommand}" Text = "Stop" BackgroundColor="Silver"  WidthRequest="120" Image="Stop" IsEnabled= "true"/>
-                <Button Command="{Binding PlayCommand}" Text = "Play" BackgroundColor="Silver"  WidthRequest="120" Image="Start" IsEnabled= "true"/>
-            </FlexLayout>
-            
-        </StackLayout>
+        <Grid>
+            <StackLayout IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" Margin="10">
+                <Grid ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Button Grid.Column="0" Command="{Binding StartRecordingCommand}" Text ="Record" BackgroundColor="Silver" WidthRequest="120" />
+
+                    <Button Grid.Column="1" Command="{Binding PlayCommand}" Text="Play" BackgroundColor="Silver"  WidthRequest="120"/>
+                </Grid>
+
+                <Label Text="{Binding Path}" Font="14"/>
+            </StackLayout>
+
+            <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="True" HorizontalOptions="Center" VerticalOptions="Center" Color="#505050"/>
+        </Grid>
     </ContentPage.Content>
 </base:BasePage>

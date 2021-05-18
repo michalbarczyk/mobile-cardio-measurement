@@ -4,6 +4,7 @@ using MobileCardioMeasurement.Pages;
 using MobileCardioMeasurement.Pages.Base;
 using MobileCardioMeasurement.ViewModels;
 using Xamarin.Forms;
+using MobileCardioMeasurement.ViewModels.Base;
 
 namespace MobileCardioMeasurement.Services
 {

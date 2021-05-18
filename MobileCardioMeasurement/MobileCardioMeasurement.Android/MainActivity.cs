@@ -17,17 +17,23 @@ namespace MobileCardioMeasurement.Android
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            if (ContextCompat.CheckSelfPermission (this, Manifest.Permission.RecordAudio) != Permission.Granted)
-            {
-                ActivityCompat.RequestPermissions (this, new [] { Manifest.Permission.RecordAudio }, 1);
-            }
+           
             
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
 
+            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+
             base.OnCreate(savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
+        }
+
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        {
+            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }

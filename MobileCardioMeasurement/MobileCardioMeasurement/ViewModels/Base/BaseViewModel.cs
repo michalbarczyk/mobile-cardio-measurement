@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace MobileCardioMeasurement.ViewModels
+namespace MobileCardioMeasurement.ViewModels.Base
 {
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
