@@ -19,13 +19,16 @@ namespace MobCardioMeasurement.ViewModels
             {
                 IsLoading = true;
                 Path = await _audioService.RecordSample(TimeSpan.FromSeconds(10));
-                //await Task.Delay(TimeSpan.FromSeconds(10));
                 IsLoading = false;     
             });
 
             StopRecordingCommand = new Command(async () => { });
 
-            PlayCommand = new Command(() => { });
+            PlayCommand = new Command(() =>
+            {
+                var data = new WavService().ProcessWav(Path);
+                Path = data.ToString();
+            });
         }
         
         public bool IsLoading

@@ -29,7 +29,18 @@
                     <Button Grid.Column="1" Command="{Binding PlayCommand}" Text="Play" BackgroundColor="Silver"  WidthRequest="120"/>
                 </Grid>
 
-                <Label Text="{Binding Path}" Font="14"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Text="{Binding Path}" Font="14" Grid.Row="0"/>
+                </Grid>
+
+                
             </StackLayout>
 
             <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="True" HorizontalOptions="Center" VerticalOptions="Center" Color="#505050"/>

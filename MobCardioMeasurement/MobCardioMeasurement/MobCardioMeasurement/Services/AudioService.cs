@@ -26,11 +26,13 @@ namespace MobCardioMeasurement.Services
                 await InitializeAsync();
             }
 
+            string path = Path.Combine(await _storageService.GetAppFolderPathAsync(), $"sample{Guid.NewGuid()}.wav");
+            _audioRecorder.FilePath = path;
             _audioRecorder.TotalAudioTimeout = sampleTimeSpan;
 
-            await StartRecording();  
-           
-            return _audioRecorder?.GetAudioFilePath();
+            await StartRecording();
+
+            return path;
         }
 
         private async Task StartRecording()
@@ -51,8 +53,7 @@ namespace MobCardioMeasurement.Services
                 {
                     StopRecordingAfterTimeout = true,
                     TotalAudioTimeout = TimeSpan.FromSeconds(10),
-                    AudioSilenceTimeout = TimeSpan.FromSeconds(60),
-                    FilePath = Path.Combine(await _storageService.GetAppFolderPathAsync(), $"sample{Guid.NewGuid()}.wav")
+                    AudioSilenceTimeout = TimeSpan.FromSeconds(60)
                 };
             }
             else
