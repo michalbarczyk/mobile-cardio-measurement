@@ -26,7 +26,7 @@ namespace MobCardioMeasurement.Services
                 await InitializeAsync();
             }
 
-            string path = Path.Combine(await _storageService.GetAppFolderPathAsync(), $"sample{Guid.NewGuid()}.wav");
+            string path = Path.Combine(await _storageService.GetAppFolderPathAsync(), $"sample{DateTime.Now.ToString("O")}.wav");
             _audioRecorder.FilePath = path;
             _audioRecorder.TotalAudioTimeout = sampleTimeSpan;
 

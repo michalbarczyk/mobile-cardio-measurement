@@ -2,35 +2,32 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using MobCardioMeasurement.Extensions;
 
 
 namespace MobCardioMeasurement.Services
 {
     public class WavService
     {
-        public int ProcessWav(string path)
+        private readonly byte[] _bytes;
+        public WavService(string filepath) => _bytes = File.ReadAllBytes(filepath);
+        
+        public Int32 SampleRate => BitConverter.ToInt32(_bytes.SubArray(24, 4), 0);
+        public Int16 BitsPerSample => BitConverter.ToInt16(_bytes.SubArray(34, 2), 0);
+        public Int16[] Data => GetData();
+        private Int16[] GetData()
         {
-            //            byte[] content = File.ReadAllBytes(path);
-            //
-            //            byte[] bytes = { content[24], content[25], content[26], content[27] };
-            //
-            //            if (BitConverter.IsLittleEndian)
-            //                Array.Reverse(bytes);
-            //
-            //            int i = BitConverter.ToInt32(bytes, 0);
-            //
-            //            return i;
+            const int dataStartIndex = 44;
+            int length = _bytes.Length;
 
-            int bitrate;
-            using (var f = File.OpenRead(path))
+            Int16[] data = new Int16[(length - dataStartIndex) / 2];
+
+            for (int index = 0; index < data.Length; index++)
             {
-                f.Seek(28, SeekOrigin.Begin);
-                byte[] val = new byte[4];
-                f.Read(val, 0, 4);
-                bitrate = BitConverter.ToInt32(val, 0);
+                data[index] = BitConverter.ToInt16(_bytes.SubArray(dataStartIndex + 2 * index, 2), 0);
             }
 
-            return bitrate;
+            return data;
         }
     }
 }

@@ -4,6 +4,7 @@
                xmlns:base="clr-namespace:MobCardioMeasurement.Pages.Base;assembly=MobCardioMeasurement"
                xmlns:viewModels="clr-namespace:MobCardioMeasurement.ViewModels;assembly=MobCardioMeasurement"
                xmlns:converters="clr-namespace:MobCardioMeasurement.Converters"
+               xmlns:microcharts="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms"
                x:Class="MobCardioMeasurement.Pages.MainPage"
                x:TypeArguments="viewModels:MainViewModel" 
                BackgroundColor="White"
@@ -17,33 +18,26 @@
     
     <ContentPage.Content>
         <Grid>
-            <StackLayout IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" Margin="10">
-                <Grid ColumnSpacing="10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    
-                    <Button Grid.Column="0" Command="{Binding StartRecordingCommand}" Text ="Record" BackgroundColor="Silver" WidthRequest="120" />
+            <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                    <Button Grid.Column="1" Command="{Binding PlayCommand}" Text="Play" BackgroundColor="Silver"  WidthRequest="120"/>
-                </Grid>
+                <Button Command="{Binding MeasureCommand}" Grid.Row="0" Text ="Measure" BackgroundColor="#707070" TextColor="White"/>
 
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                <Label Text="{Binding Path}" FontSize="Micro" Grid.Row="1"/>
 
-                    <Label Text="{Binding Path}" Font="14" Grid.Row="0"/>
-                </Grid>
+                <Label Text="{Binding Metadata}" FontSize="Medium" Grid.Row="2"/>
 
-                
-            </StackLayout>
+                <microcharts:ChartView x:Name="Chart" Grid.Row="3" HeightRequest="150" VerticalOptions="FillAndExpand"/>
+            </Grid>
 
-            <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="True" HorizontalOptions="Center" VerticalOptions="Center" Color="#505050"/>
+            <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="True" 
+                               HorizontalOptions="Center" VerticalOptions="Center" 
+                               Color="#505050" WidthRequest="100" HeightRequest="100"/>
         </Grid>
     </ContentPage.Content>
 </base:BasePage>
