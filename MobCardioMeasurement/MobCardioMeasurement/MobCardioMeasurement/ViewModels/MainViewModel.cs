@@ -1,5 +1,7 @@
 ﻿using MobCardioMeasurement.Services;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Xamarin.Forms;
 using MobCardioMeasurement.ViewModels.Base;
 using System.Threading.Tasks;
@@ -11,21 +13,25 @@ namespace MobCardioMeasurement.ViewModels
         private readonly AudioService _audioService;
         private bool _isLoading;
         private string _path;
+        private string _metadata;
+
+        public event Action<IEnumerable<Int16>> DataCalculated; 
         public MainViewModel()
         {
             _audioService = new AudioService();
-            
-            StartRecordingCommand = new Command(async () =>
+
+            MeasureCommand = new Command(async () =>
             {
                 IsLoading = true;
-                Path = await _audioService.RecordSample(TimeSpan.FromSeconds(10));
-                //await Task.Delay(TimeSpan.FromSeconds(10));
-                IsLoading = false;     
+                Path = await _audioService.RecordSample(TimeSpan.FromSeconds(6));
+                IsLoading = false;
+
+                var wav = new WavService(_path);
+
+                Metadata = $"Rate: {wav.SampleRate}\nLength: {wav.Data.Length}";
+
+                DataCalculated?.Invoke(wav.Data);
             });
-
-            StopRecordingCommand = new Command(async () => { });
-
-            PlayCommand = new Command(() => { });
         }
         
         public bool IsLoading
@@ -38,8 +44,11 @@ namespace MobCardioMeasurement.ViewModels
             get => _path;
             set => SetProperty(ref _path, value);
         }
-        public Command StartRecordingCommand { get; }
-        public Command StopRecordingCommand { get; }
-        public Command PlayCommand { get; }
+        public string Metadata
+        {
+            get => _metadata;
+            set => SetProperty(ref _metadata, value);
+        }
+        public Command MeasureCommand { get; }
     }
 }
