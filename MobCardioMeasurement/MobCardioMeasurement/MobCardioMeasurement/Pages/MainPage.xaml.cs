@@ -14,22 +14,54 @@ namespace MobCardioMeasurement.Pages
         public MainPage()
         {
             InitializeComponent();
-            Chart.Chart = new LineChart
+            ChartRawSignal.Chart = new LineChart
             {
                 IsAnimated = false
             };
+//            MovingAverage.Chart = new LineChart
+//            {
+//                IsAnimated = false
+//            };
+//            Peaks.Chart = new PointChart
+//            {
+//                IsAnimated = false
+//            };
             base.ViewModel.DataCalculated += OnDataCalculated;
+            base.ViewModel.MovingAverageCalculated += OnMovingAverageCalculated;
+            base.ViewModel.PeaksCalculated += OnPeaksCalculated;
         }
 
-        private void OnDataCalculated(IEnumerable<Int16> data)
+        private void OnDataCalculated(IEnumerable<double> data)
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                Chart.Chart.Entries = data
-                    .Where((x, idx) => idx % 600 == 0) // print only some records
+                ChartRawSignal.Chart.Entries = data
+                    .Where((x, idx) => idx % 20 == 0) // print only some records
                     .Select(x => new ChartEntry((float)x))
                     .ToList();
             });
+        }
+
+        private void OnMovingAverageCalculated(IEnumerable<double> movAvg)
+        {
+//            Device.BeginInvokeOnMainThread(() =>
+//            {
+//                MovingAverage.Chart.Entries = movAvg
+//                    .Where((x, idx) => idx % 600 == 0) // print only some records
+//                    .Select(x => new ChartEntry((float)x))
+//                    .ToList();
+//            });
+        }
+
+        private void OnPeaksCalculated(IEnumerable<double> peaks)
+        {
+//            Device.BeginInvokeOnMainThread(() =>
+//            {
+//                Peaks.Chart.Entries = peaks
+//                    //.Where((x, idx) => idx % 600 == 0) // print only some records
+//                    .Select(x => new ChartEntry((float)x))
+//                    .ToList();
+//            });
         }
     }
 }
