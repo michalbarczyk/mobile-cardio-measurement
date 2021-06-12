@@ -18,22 +18,29 @@
     
     <ContentPage.Content>
         <Grid>
-            <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+            <ScrollView>
+                <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                <Button Command="{Binding MeasureCommand}" Grid.Row="0" Text ="Measure" BackgroundColor="#707070" TextColor="White"/>
+                    <Button Command="{Binding MeasureCommand}" Grid.Row="0" Text ="Measure" BackgroundColor="#707070" TextColor="White"/>
 
-                <Label Text="{Binding Path}" FontSize="Micro" Grid.Row="1"/>
+                    <Label Text="{Binding Path}" FontSize="Micro" Grid.Row="1"/>
 
-                <Label Text="{Binding Metadata}" FontSize="Medium" Grid.Row="2"/>
+                    <Label Text="{Binding Metadata}" FontSize="Medium" Grid.Row="2"/>
 
-                <microcharts:ChartView x:Name="Chart" Grid.Row="3" HeightRequest="150" VerticalOptions="FillAndExpand"/>
-            </Grid>
+                    <microcharts:ChartView x:Name="ChartRawSignal" Grid.Row="3" HeightRequest="150" VerticalOptions="FillAndExpand"/>
+
+                </Grid>
+            </ScrollView>
 
             <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="True" 
                                HorizontalOptions="Center" VerticalOptions="Center" 

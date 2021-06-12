@@ -2,11 +2,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Xamarin.Forms;
 using MobCardioMeasurement.ViewModels.Base;
 using System.Threading.Tasks;
+using Accord;
 using Accord.Audio;
+using Newtonsoft.Json;
+using Xamarin.Forms.Xaml;
 
 namespace MobCardioMeasurement.ViewModels
 {
@@ -16,8 +23,11 @@ namespace MobCardioMeasurement.ViewModels
         private bool _isLoading;
         private string _path;
         private string _metadata;
+        private ObservableCollection<string> _items = new ObservableCollection<string>();
 
-        public event Action<IEnumerable<Int16>> DataCalculated; 
+        public event Action<IEnumerable<double>> DataCalculated;
+        public event Action<IEnumerable<double>> PeaksCalculated;
+        public event Action<IEnumerable<double>> MovingAverageCalculated;
         public MainViewModel()
         {
             _audioService = new AudioService();
@@ -25,51 +35,32 @@ namespace MobCardioMeasurement.ViewModels
             MeasureCommand = new Command(async () =>
             {
                 IsLoading = true;
-                Path = await _audioService.RecordSample(TimeSpan.FromSeconds(6));
-                IsLoading = false;
                 
+                Path = await _audioService.RecordSample(TimeSpan.FromSeconds(10));
+
                 var wav = new WavService(_path);
-                
-                var ecg = wav.Data;
-                var max = ecg.Max();
-                const int frameSize = 1000;
-                var threshold = 0.15;
 
-                var data = ecg.Select(val => (double) val).ToArray();
-                var peaksAll = data.FindPeaks(); // indeksy peakow
-                var size = peaksAll.Length;
+                var movAvgData = wav.Data.Where((x, i) => i % 48 == 0).Select(x => (double)x).ToArray();
 
-                var dataMovingAvg = movingAvg(ecg, frameSize);
-                var peaksMovingAvg = dataMovingAvg.FindPeaks();
+                var peaksMovAvgData = movAvgData.FindPeaks();
+                // debug: Metadata = $"{nameof(peaksMovAvgData)}: {peaksMovAvgData.Length}";
 
-                var rPeaks = peaksMovingAvg.Where(peak => dataMovingAvg[peak] > threshold).Select(peak => (short) peak).ToList();
-                var rPeaksSize = rPeaks.Count;
+                const double treshold = 6450.0;
 
-                Metadata = $"Rate: {wav.SampleRate}\nLength: {wav.Data.Length}\nR peaks: {rPeaksSize}\n";
+                var beats = peaksMovAvgData.Where(p => movAvgData[p] > treshold).ToArray();
+                Metadata = $"BPM: {beats.Length * 6}"; // since there are 6 10sec periods in one minute
 
-                DataCalculated?.Invoke(wav.Data);
+                DataCalculated?.Invoke(movAvgData);
+                IsLoading = false;
             });
         }
         
-        public double[] movingAvg(Int16[] data, int frameSize)
+        private double[] MovingAvg(double[] data, int frameSize)
         {
-            double sum = 0;
-            double[] avgPeaks = new double[data.Length];
-            for (int i = 0; i < data.Length; i++)
-            {
-                int counter = 0;
-                int index = counter;
-                while (counter < frameSize)
-                {
-                    sum += data[index];
-                    counter++;
-                    index++;
-                }
-
-                avgPeaks[i] = sum / frameSize;
-                sum = 0;
-            }
-            return avgPeaks;
+            return Enumerable
+                .Range(0, data.Count() - frameSize)
+                .Select(n => data.Skip(n).Take(frameSize).Average())
+                .ToArray();
         }
         
         public bool IsLoading
@@ -87,6 +78,32 @@ namespace MobCardioMeasurement.ViewModels
             get => _metadata;
             set => SetProperty(ref _metadata, value);
         }
+
+        public ObservableCollection<string> Items
+        {
+            get => _items;
+            set => SetProperty(ref _items, value);
+        }
         public Command MeasureCommand { get; }
+
+        private double[] MovAvg(double[] data, int rad)
+        {
+            List<double> movAvg = new List<double>();
+
+            for (int i = rad; i < data.Length - rad; i++)
+            {
+                var sum = 0.0;
+                for (int j = i - rad; j <= i + rad; j++)
+                {
+                    sum += data[j];
+                }
+                movAvg.Add(sum / (1.0 + 2.0 * rad));
+
+                
+                Debug.WriteLineIf(i % 10000 == 0, $"CURRENT [ {i}/{data.Length - rad} ] [ {100*i/(data.Length - rad)}% ]");
+            }
+
+            return movAvg.ToArray();
+        }
     }
 }
