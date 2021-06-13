@@ -48,7 +48,7 @@ namespace MobCardioMeasurement.ViewModels
                 const double treshold = 6450.0;
 
                 var beats = peaksMovAvgData.Where(p => movAvgData[p] > treshold).ToArray();
-                Metadata = $"BPM: {beats.Length * 6}"; // since there are 6 10sec periods in one minute
+                Metadata = $"BPM: {beats.Length * 3}"; // since 2 beats mean one heart beat & there are 6 10sec periods in one minute
 
                 DataCalculated?.Invoke(movAvgData);
                 IsLoading = false;
